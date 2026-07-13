@@ -1,5 +1,5 @@
 // STADE ÖZ GEBRAUCHTWAGEN — İlan verileri
-// Admin panelinden üretildi: 13.7.2026, 11:10:50
+// Admin panelinden üretildi: 13.7.2026, 11:14:24
 window.CARS = [
   {
     "id": 1,
@@ -27,7 +27,7 @@ window.CARS = [
     "marka": "Volkswagen",
     "model": "Golf 8 2.0 TDI",
     "yil": 2024,
-    "km": 92500,
+    "km": 19500,
     "yakit": "Diesel",
     "vites": "Automatik",
     "ps": 150,
@@ -47,11 +47,11 @@ window.CARS = [
     "id": 3,
     "marka": "Mercedes-Benz",
     "model": "CLE350e",
-    "yil": 2015,
+    "yil": 2024,
     "km": 10000,
-    "yakit": "",
-    "vites": "",
-    "ps": 194,
+    "yakit": "Hybrid",
+    "vites": "Automatik",
+    "ps": 200,
     "renk": "Obsidianschwarz",
     "tuv": "11/2026",
     "fiyat": 45900,
