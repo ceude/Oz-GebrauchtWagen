@@ -1,5 +1,5 @@
 // STADE ÖZ GEBRAUCHTWAGEN — İlan verileri
-// Admin panelinden üretildi: 13.7.2026, 11:27:08
+// Admin panelinden üretildi: 13.7.2026, 11:29:18
 window.CARS = [
   {
     "id": 1,
@@ -7,7 +7,7 @@ window.CARS = [
     "model": "530e",
     "yil": 2025,
     "km": 9500,
-    "yakit": "Benzin",
+    "yakit": "Hybrid",
     "vites": "Automatik",
     "ps": 200,
     "renk": "Açık Mavi",
@@ -151,7 +151,7 @@ window.CARS = [
   {
     "marka": "Mercedes-Benz",
     "model": "C300e",
-    "yil": 2025,
+    "yil": 2024,
     "km": 50000,
     "yakit": "Hybrid",
     "vites": "Automatik",
