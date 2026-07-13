@@ -412,39 +412,39 @@ function closeToast(){ $("toastbox").classList.remove("open"); }
 $("toastbox").addEventListener("click", e => { if(e.target === $("toastbox")) closeToast(); });
 
 $("btnCall").onclick = () => {
-  showToast(`<div class="spin"></div><h4>Verbinde…</h4><p>Der Verkäufer wird angerufen…</p>`);
+  showToast(`<div class="spin"></div><h4>Bağlanıyor…</h4><p>Satıcı aranıyor…</p>`);
   setTimeout(() => {
     const msgs = [
-      "Der Verkäufer ist gerade in einer sehr wichtigen Besprechung. (Kaffeepause.)",
-      "Der Verkäufer ist auf der Baustelle und hört nichts. Bitte per Zuruf über den Zaun versuchen.",
-      "Mailbox: „Isch ruf disch zurück, Bruder. Versprochen.“",
+      "Satıcı şu an çok önemli bir toplantıda. (Kahve molası.)",
+      "Satıcı şantiyede, hiçbir şey duymuyor. Çitin üzerinden bağırarak deneyin.",
+      "Telesekreter: „Seni sonra ararım kardeşim. Söz.“",
     ];
-    showToast(`<div class="ico">📵</div><h4>Nicht erreichbar</h4><p>${msgs[Math.floor(Math.random()*msgs.length)]}</p><div class="trow"><button class="btn call" onclick="document.getElementById('toastbox').classList.remove('open')">OK, verstehe</button></div>`);
+    showToast(`<div class="ico">📵</div><h4>Ulaşılamıyor</h4><p>${msgs[Math.floor(Math.random()*msgs.length)]}</p><div class="trow"><button class="btn call" onclick="document.getElementById('toastbox').classList.remove('open')">Tamam, anladım</button></div>`);
   }, 1800);
 };
 
 $("btnBuy").onclick = () => {
   const c = currentCar;
-  showToast(`<div class="spin"></div><h4>Kauf wird verarbeitet…</h4><p>Zahlungsmethoden werden geprüft: Bar, Döner, Überstunden…</p>`);
+  showToast(`<div class="spin"></div><h4>Satın alma işleniyor…</h4><p>Ödeme yöntemleri kontrol ediliyor: Nakit, döner, fazla mesai…</p>`);
   setTimeout(() => {
-    showToast(`<div class="ico">🎉</div><h4>Glückwunsch!</h4><p>Der <b>${esc(c.marka)} ${esc(c.model)}</b> gehört (theoretisch) Ihnen! Der Kaufvertrag wird auf einer Serviette in der Kantine vorbereitet. Anzahlung: 1 Kaffee.</p><div class="trow"><button class="btn buy" onclick="document.getElementById('toastbox').classList.remove('open')">Deal! 🤝</button></div>`);
+    showToast(`<div class="ico">🎉</div><h4>Tebrikler!</h4><p><b>${esc(c.marka)} ${esc(c.model)}</b> (teorik olarak) sizin! Satış sözleşmesi kantinde bir peçeteye hazırlanıyor. Kaparo: 1 kahve.</p><div class="trow"><button class="btn buy" onclick="document.getElementById('toastbox').classList.remove('open')">Anlaştık! 🤝</button></div>`);
   }, 2000);
 };
 
 $("btnOffer").onclick = () => {
   const c = currentCar;
-  showToast(`<div class="ico">💰</div><h4>Ihr Angebot</h4><p>Preisvorstellung: <b>${fmtEur(c.fiyat)}</b> — was bieten Sie?</p>
-    <input id="offerInput" type="number" placeholder="z.B. ${Math.round(c.fiyat*0.7)}" autofocus>
-    <div class="trow"><button class="btn offer" id="offerSend">Angebot senden</button></div>`);
+  showToast(`<div class="ico">💰</div><h4>Teklifiniz</h4><p>İstenen fiyat: <b>${fmtEur(c.fiyat)}</b> — siz ne veriyorsunuz?</p>
+    <input id="offerInput" type="number" placeholder="örn. ${Math.round(c.fiyat*0.7)}" autofocus>
+    <div class="trow"><button class="btn offer" id="offerSend">Teklifi gönder</button></div>`);
   setTimeout(() => {
     $("offerSend").onclick = () => {
       const v = Number($("offerInput").value || 0);
       let ico, t, p;
-      if(!v){ ico="🤨"; t="Ernsthaft?"; p="Null Euro? Der Verkäufer hat den Chat verlassen."; }
-      else if(v < c.fiyat*0.5){ ico="😂"; t="Angebot abgelehnt"; p=`${fmtEur(v)}?! Der Verkäufer hat so laut gelacht, dass die ganze Baustelle mitgelacht hat.`; }
-      else if(v < c.fiyat){ ico="🧐"; t="Hmm… knapp"; p=`${fmtEur(v)} ist nicht schlecht. Der Verkäufer sagt: „Leg noch einen Döner mit alles drauf, dann reden wir."`; }
-      else { ico="🤝"; t="Angebot angenommen!"; p=`${fmtEur(v)} — sofort verkauft! Der Verkäufer meldet sich… irgendwann. Vielleicht.`; }
-      showToast(`<div class="ico">${ico}</div><h4>${t}</h4><p>${p}</p><div class="trow"><button class="btn offer" onclick="document.getElementById('toastbox').classList.remove('open')">Schließen</button></div>`);
+      if(!v){ ico="🤨"; t="Ciddi misiniz?"; p="Sıfır Euro? Satıcı sohbetten ayrıldı."; }
+      else if(v < c.fiyat*0.5){ ico="😂"; t="Teklif reddedildi"; p=`${fmtEur(v)} mi?! Satıcı o kadar yüksek sesle güldü ki bütün şantiye ona eşlik etti.`; }
+      else if(v < c.fiyat){ ico="🧐"; t="Hmm… az kaldı"; p=`${fmtEur(v)} fena değil. Satıcı diyor ki: „Üstüne bir de her şeyli döner koy, konuşalım.“`; }
+      else { ico="🤝"; t="Teklif kabul edildi!"; p=`${fmtEur(v)} — anında satıldı! Satıcı size dönecek… bir ara. Belki.`; }
+      showToast(`<div class="ico">${ico}</div><h4>${t}</h4><p>${p}</p><div class="trow"><button class="btn offer" onclick="document.getElementById('toastbox').classList.remove('open')">Kapat</button></div>`);
     };
   }, 50);
 };
