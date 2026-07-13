@@ -1,5 +1,5 @@
 // STADE ÖZ GEBRAUCHTWAGEN — İlan verileri
-// Admin panelinden üretildi: 13.7.2026, 11:59:46
+// Admin panelinden üretildi: 13.7.2026, 15:40:11
 window.CARS = [
   {
     "id": 1,
@@ -12,7 +12,7 @@ window.CARS = [
     "ps": 200,
     "renk": "Açık Mavi",
     "tuv": "11/2027",
-    "fiyat": 62900,
+    "fiyat": 65900,
     "satici": {
       "ad": "İlkay",
       "soyad": "A"
