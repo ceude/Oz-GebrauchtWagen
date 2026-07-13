@@ -1,5 +1,5 @@
 // STADE ÖZ GEBRAUCHTWAGEN — İlan verileri
-// Admin panelinden üretildi: 13.7.2026, 11:14:24
+// Admin panelinden üretildi: 13.7.2026, 11:23:04
 window.CARS = [
   {
     "id": 1,
@@ -12,7 +12,7 @@ window.CARS = [
     "ps": 200,
     "renk": "Açık Mavi",
     "tuv": "11/2027",
-    "fiyat": 59000,
+    "fiyat": 62900,
     "satici": {
       "ad": "İlkay",
       "soyad": "A"
@@ -46,15 +46,15 @@ window.CARS = [
   {
     "id": 3,
     "marka": "Mercedes-Benz",
-    "model": "CLE350e",
+    "model": "CLE300e",
     "yil": 2024,
-    "km": 10000,
+    "km": 12000,
     "yakit": "Hybrid",
     "vites": "Automatik",
     "ps": 200,
     "renk": "Obsidianschwarz",
     "tuv": "11/2026",
-    "fiyat": 45900,
+    "fiyat": 52900,
     "satici": {
       "ad": "Onur",
       "soyad": "A"
@@ -159,7 +159,7 @@ window.CARS = [
     "renk": "Siyah",
     "tuv": "05/2027",
     "kaza": null,
-    "fiyat": 32900,
+    "fiyat": 27900,
     "satici": {
       "ad": "Taha",
       "soyad": "M."
