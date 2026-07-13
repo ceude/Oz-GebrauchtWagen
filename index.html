@@ -59,6 +59,10 @@ header{background:var(--anthrazit);color:#fff;position:sticky;top:0;z-index:50;b
 /* ---------- GRID ---------- */
 main{max-width:1180px;margin:0 auto;padding:34px 20px 70px}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.toolbar{display:flex;align-items:center;justify-content:flex-end;gap:9px;margin-bottom:20px}
+.toolbar label{font-size:12.5px;font-weight:600;color:var(--muted);letter-spacing:.3px}
+.toolbar select{padding:9px 12px;border:1.5px solid var(--line);border-radius:9px;font-size:13.5px;font-family:inherit;font-weight:600;background:#fff;color:var(--ink);cursor:pointer}
+.toolbar select:focus{outline:none;border-color:var(--plate-blue)}
 @media(max-width:980px){.grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:620px){.grid{grid-template-columns:1fr}}
 
@@ -211,6 +215,15 @@ footer b{color:#D1D5DB}
 </section>
 
 <main id="storefront">
+  <div class="toolbar">
+    <label for="sortSel">Sortieren:</label>
+    <select id="sortSel">
+      <option value="default">Standard</option>
+      <option value="fiyat_asc">Preis: aufsteigend</option>
+      <option value="fiyat_desc">Preis: absteigend</option>
+      <option value="km_asc">Kilometer: aufsteigend</option>
+    </select>
+  </div>
   <div class="grid" id="grid"></div>
 </main>
 
@@ -229,7 +242,7 @@ footer b{color:#D1D5DB}
       <div class="field"><label>PS (Beygir)</label><input id="f_ps" type="number" placeholder="190"></div>
       <div class="field"><label>Renk</label><input id="f_renk" placeholder="Alpinweiß"></div>
       <div class="field"><label>TÜV (AA/YYYY)</label><input id="f_tuv" placeholder="08/2027"></div>
-      <div class="field"><label>Kaza Durumu</label><select id="f_kaza"><option value="0">Kazasız (Unfallfrei)</option><option value="1">Kazalı (Unfallwagen)</option></select></div>
+      <div class="field"><label>Kaza Durumu</label><select id="f_kaza"><option value="">— Boş (gösterilmesin) —</option><option value="0">Kazasız (Unfallfrei)</option><option value="1">Kazalı (Unfallwagen)</option></select></div>
       <div class="field"><label>Fiyat (€)</label><input id="f_fiyat" type="number" placeholder="15900"></div>
       <div class="field"><label>Satıcı Adı</label><input id="f_ad" placeholder="Mehmet"></div>
       <div class="field"><label>Satıcı Soyadı</label><input id="f_soyad" placeholder="Yılmaz (sitede sadece Y. görünür)"></div>
@@ -326,7 +339,12 @@ function renderGrid(){
     g.innerHTML = '<div class="empty"><div class="big">Der Platz ist leer 😢</div><p>Alle Wagen verkauft — oder der Chef hat noch keine eingetragen.</p></div>';
     return;
   }
-  g.innerHTML = cars.map(c => `
+  const mode = $("sortSel").value;
+  let list = [...cars];
+  if(mode === "fiyat_asc") list.sort((a,b)=>a.fiyat-b.fiyat);
+  else if(mode === "fiyat_desc") list.sort((a,b)=>b.fiyat-a.fiyat);
+  else if(mode === "km_asc") list.sort((a,b)=>a.km-b.km);
+  g.innerHTML = list.map(c => `
     <article class="card" tabindex="0" data-id="${c.id}" aria-label="${esc(c.marka)} ${esc(c.model)}">
       <div class="photo">
         ${c.satildi ? '<div class="verkauft">Verkauft</div>' : ''}
@@ -340,7 +358,7 @@ function renderGrid(){
           <div class="spec">${icons.gauge} ${fmtKm(c.km)}</div>
           <div class="spec">${icons.fuel} ${esc(c.yakit)}</div>
           <div class="spec">${icons.gear} ${esc(c.vites)}</div>
-          <div class="spec full ${c.kaza ? 'bad' : 'ok'}">${c.kaza ? icons.warn : icons.shield} ${c.kaza ? 'Unfallwagen' : 'Unfallfrei'}</div>
+          ${c.kaza === true || c.kaza === false ? `<div class="spec full ${c.kaza ? 'bad' : 'ok'}">${c.kaza ? icons.warn : icons.shield} ${c.kaza ? 'Unfallwagen' : 'Unfallfrei'}</div>` : ''}
         </div>
         <div class="foot">
           <div class="seller"><span class="avatar">${esc(initials(c))}</span> ${esc(sellerName(c))}</div>
@@ -372,8 +390,10 @@ function openDetail(id){
   $("d_ps").textContent = c.ps + " PS";
   $("d_renk").textContent = c.renk;
   $("d_tuv").textContent = c.tuv;
-  const kz = $("d_kaza"); kz.textContent = c.kaza ? "⚠ Unfallwagen (aber Charakter!)" : "✓ Unfallfrei";
-  kz.style.color = c.kaza ? "var(--signal)" : "#1B7A3D";
+  const kz = $("d_kaza");
+  if(c.kaza === true){ kz.textContent = "⚠ Unfallwagen (aber Charakter!)"; kz.style.color = "var(--signal)"; }
+  else if(c.kaza === false){ kz.textContent = "✓ Unfallfrei"; kz.style.color = "#1B7A3D"; }
+  else { kz.textContent = "keine Angabe 🤫"; kz.style.color = "var(--muted)"; }
   $("d_desc").textContent = c.aciklama;
   $("d_avatar").textContent = initials(c);
   $("d_seller").textContent = sellerName(c);
@@ -482,7 +502,7 @@ function resizeImage(file, maxW, q){
 }
 function clearForm(){
   ["f_marka","f_model","f_yil","f_km","f_ps","f_renk","f_tuv","f_fiyat","f_ad","f_soyad","f_aciklama"].forEach(id => $(id).value = "");
-  $("f_yakit").value = "Diesel"; $("f_vites").value = "Manuell"; $("f_kaza").value = "0";
+  $("f_yakit").value = "Diesel"; $("f_vites").value = "Manuell"; $("f_kaza").value = "";
   $("f_foto").value = ""; $("fotoPrev").style.display = "none";
   pendingFoto = null; editId = null;
   $("btnSave").textContent = "💾 Kaydet"; $("btnCancel").style.display = "none";
@@ -503,7 +523,7 @@ $("btnSave").onclick = () => {
     ps: +$("f_ps").value || 0,
     renk: $("f_renk").value.trim() || "—",
     tuv: $("f_tuv").value.trim() || "—",
-    kaza: $("f_kaza").value === "1",
+    kaza: $("f_kaza").value === "" ? null : $("f_kaza").value === "1",
     fiyat: +$("f_fiyat").value,
     satici: { ad: $("f_ad").value.trim(), soyad: $("f_soyad").value.trim() || "?" },
     aciklama: $("f_aciklama").value.trim(),
@@ -547,7 +567,7 @@ $("alist").addEventListener("click", e => {
     $("f_marka").value=c.marka; $("f_model").value=c.model; $("f_yil").value=c.yil; $("f_km").value=c.km;
     $("f_yakit").value=c.yakit; $("f_vites").value=c.vites; $("f_ps").value=c.ps; $("f_renk").value=c.renk;
     $("f_tuv").value=c.tuv; $("f_fiyat").value=c.fiyat; $("f_ad").value=c.satici.ad; $("f_soyad").value=c.satici.soyad;
-    $("f_kaza").value = c.kaza ? "1" : "0";
+    $("f_kaza").value = c.kaza === true ? "1" : c.kaza === false ? "0" : "";
     $("f_aciklama").value=c.aciklama;
     $("fotoPrev").src=c.foto; $("fotoPrev").style.display="block"; pendingFoto = null;
     $("btnSave").textContent = "💾 Güncelle"; $("btnCancel").style.display = "inline-block";
@@ -568,6 +588,7 @@ $("btnExport").onclick = () => {
 };
 window.addEventListener("beforeunload", e => { if(dirty){ e.preventDefault(); e.returnValue = ""; }});
 
+$("sortSel").addEventListener("change", renderGrid);
 renderGrid();
 })();
 </script>
