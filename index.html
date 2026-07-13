@@ -77,6 +77,9 @@ main{max-width:1180px;margin:0 auto;padding:34px 20px 70px}
 .specrow{display:grid;grid-template-columns:1fr 1fr;gap:7px 12px}
 .spec{display:flex;align-items:center;gap:7px;font-size:13px;color:#3E434C;font-weight:500}
 .spec svg{width:15px;height:15px;flex-shrink:0;stroke:var(--plate-blue)}
+.spec.full{grid-column:1/-1;font-weight:700}
+.spec.ok{color:#1B7A3D}.spec.ok svg{stroke:#1B7A3D}
+.spec.bad{color:var(--signal)}.spec.bad svg{stroke:var(--signal)}
 .card .foot{margin-top:auto;padding-top:12px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;font-size:13px}
 .seller{display:flex;align-items:center;gap:8px;color:var(--muted);font-weight:500}
 .avatar{width:26px;height:26px;border-radius:50%;background:var(--plate-blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
@@ -186,7 +189,7 @@ footer b{color:#D1D5DB}
     </div>
     <div class="brand-sub">
       <div class="name">Stade Öz Gebrauchtwagen</div>
-      <div class="tag">Meister Uraz &amp; Kollegen · An der Baustelle 1, 21683 Stade</div>
+      <div class="tag">Gebrauchtwagen mit Charakter · An der Baustelle 1, 21683 Stade</div>
     </div>
     <div class="hspacer"></div>
     <div class="hbadges">
@@ -226,6 +229,7 @@ footer b{color:#D1D5DB}
       <div class="field"><label>PS (Beygir)</label><input id="f_ps" type="number" placeholder="190"></div>
       <div class="field"><label>Renk</label><input id="f_renk" placeholder="Alpinweiß"></div>
       <div class="field"><label>TÜV (AA/YYYY)</label><input id="f_tuv" placeholder="08/2027"></div>
+      <div class="field"><label>Kaza Durumu</label><select id="f_kaza"><option value="0">Kazasız (Unfallfrei)</option><option value="1">Kazalı (Unfallwagen)</option></select></div>
       <div class="field"><label>Fiyat (€)</label><input id="f_fiyat" type="number" placeholder="15900"></div>
       <div class="field"><label>Satıcı Adı</label><input id="f_ad" placeholder="Mehmet"></div>
       <div class="field"><label>Satıcı Soyadı</label><input id="f_soyad" placeholder="Yılmaz (sitede sadece Y. görünür)"></div>
@@ -261,6 +265,7 @@ footer b{color:#D1D5DB}
           <tr><td>Leistung</td><td id="d_ps"></td></tr>
           <tr><td>Farbe</td><td id="d_renk"></td></tr>
           <tr><td>TÜV bis</td><td id="d_tuv"></td></tr>
+          <tr><td>Unfallstatus</td><td id="d_kaza"></td></tr>
         </table>
         <div class="desc" id="d_desc"></div>
         <div class="dseller">
@@ -289,7 +294,7 @@ footer b{color:#D1D5DB}
   </div>
 </footer>
 
-<script src="cars.js"></script>
+<script>document.write('<script src="cars.js?v=' + Date.now() + '"><\/script>');</script>
 <script>
 (function(){
 "use strict";
@@ -308,7 +313,9 @@ const icons = {
   cal:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>',
   gauge:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 12l4-4"/></svg>',
   fuel:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 21V6a2 2 0 012-2h6a2 2 0 012 2v15M4 21h10M14 10h2a2 2 0 012 2v5a1.5 1.5 0 003 0V9l-3-3"/></svg>',
-  gear:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><path d="M6 8v8M18 8v4a2 2 0 01-2 2H8"/></svg>'
+  gear:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><path d="M6 8v8M18 8v4a2 2 0 01-2 2H8"/></svg>',
+  shield:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg>',
+  warn:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 3L2 20h20L12 3z"/><path d="M12 10v4M12 17.5v.5"/></svg>'
 };
 
 /* ---------- STOREFRONT ---------- */
@@ -333,6 +340,7 @@ function renderGrid(){
           <div class="spec">${icons.gauge} ${fmtKm(c.km)}</div>
           <div class="spec">${icons.fuel} ${esc(c.yakit)}</div>
           <div class="spec">${icons.gear} ${esc(c.vites)}</div>
+          <div class="spec full ${c.kaza ? 'bad' : 'ok'}">${c.kaza ? icons.warn : icons.shield} ${c.kaza ? 'Unfallwagen' : 'Unfallfrei'}</div>
         </div>
         <div class="foot">
           <div class="seller"><span class="avatar">${esc(initials(c))}</span> ${esc(sellerName(c))}</div>
@@ -364,6 +372,8 @@ function openDetail(id){
   $("d_ps").textContent = c.ps + " PS";
   $("d_renk").textContent = c.renk;
   $("d_tuv").textContent = c.tuv;
+  const kz = $("d_kaza"); kz.textContent = c.kaza ? "⚠ Unfallwagen (aber Charakter!)" : "✓ Unfallfrei";
+  kz.style.color = c.kaza ? "var(--signal)" : "#1B7A3D";
   $("d_desc").textContent = c.aciklama;
   $("d_avatar").textContent = initials(c);
   $("d_seller").textContent = sellerName(c);
@@ -472,7 +482,7 @@ function resizeImage(file, maxW, q){
 }
 function clearForm(){
   ["f_marka","f_model","f_yil","f_km","f_ps","f_renk","f_tuv","f_fiyat","f_ad","f_soyad","f_aciklama"].forEach(id => $(id).value = "");
-  $("f_yakit").value = "Diesel"; $("f_vites").value = "Manuell";
+  $("f_yakit").value = "Diesel"; $("f_vites").value = "Manuell"; $("f_kaza").value = "0";
   $("f_foto").value = ""; $("fotoPrev").style.display = "none";
   pendingFoto = null; editId = null;
   $("btnSave").textContent = "💾 Kaydet"; $("btnCancel").style.display = "none";
@@ -493,6 +503,7 @@ $("btnSave").onclick = () => {
     ps: +$("f_ps").value || 0,
     renk: $("f_renk").value.trim() || "—",
     tuv: $("f_tuv").value.trim() || "—",
+    kaza: $("f_kaza").value === "1",
     fiyat: +$("f_fiyat").value,
     satici: { ad: $("f_ad").value.trim(), soyad: $("f_soyad").value.trim() || "?" },
     aciklama: $("f_aciklama").value.trim(),
@@ -536,6 +547,7 @@ $("alist").addEventListener("click", e => {
     $("f_marka").value=c.marka; $("f_model").value=c.model; $("f_yil").value=c.yil; $("f_km").value=c.km;
     $("f_yakit").value=c.yakit; $("f_vites").value=c.vites; $("f_ps").value=c.ps; $("f_renk").value=c.renk;
     $("f_tuv").value=c.tuv; $("f_fiyat").value=c.fiyat; $("f_ad").value=c.satici.ad; $("f_soyad").value=c.satici.soyad;
+    $("f_kaza").value = c.kaza ? "1" : "0";
     $("f_aciklama").value=c.aciklama;
     $("fotoPrev").src=c.foto; $("fotoPrev").style.display="block"; pendingFoto = null;
     $("btnSave").textContent = "💾 Güncelle"; $("btnCancel").style.display = "inline-block";
